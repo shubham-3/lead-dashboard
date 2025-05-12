@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import User from "../models/User.model.js";
+import User from "../models/User.model.js" // Mongoose model
 
 // Helper function to validate email
 function isValidEmail(email) {
@@ -27,15 +27,15 @@ export async function signup(req, res) {
       return res.status(400).json({ message: "Invalid email format" });
     }
 
-    const existingUser = await User.findOne({ where: { email } });
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(409).json({ message: "User already exists" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await User.create({ username, email, password: hashedPassword });
+    const newUser = new User({ username, email, password: password });
+    await newUser.save();
 
-    const token = jwt.sign({ userId: newUser.id }, process.env.JWT_SECRET_KEY, {
+    const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET_KEY, {
       expiresIn: "100d",
     });
 
@@ -46,7 +46,7 @@ export async function signup(req, res) {
       secure: process.env.NODE_ENV === "production",
     });
 
-    const { password: _, ...userWithoutPassword } = newUser.dataValues;
+    const { password: _, ...userWithoutPassword } = newUser.toObject();
 
     return res.status(201).json({
       message: "User created successfully",
@@ -68,7 +68,7 @@ export async function login(req, res) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const existingUser = await User.findOne({ where: { email } });
+    const existingUser = await User.findOne({ email });
     if (!existingUser) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
@@ -78,7 +78,7 @@ export async function login(req, res) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ userId: existingUser.id }, process.env.JWT_SECRET_KEY, {
+    const token = jwt.sign({ userId: existingUser._id }, process.env.JWT_SECRET_KEY, {
       expiresIn: "100d",
     });
 
@@ -89,7 +89,7 @@ export async function login(req, res) {
       secure: process.env.NODE_ENV === "production",
     });
 
-    const { password: _, ...userWithoutPassword } = existingUser.dataValues;
+    const { password: _, ...userWithoutPassword } = existingUser.toObject();
 
     return res.status(200).json({
       message: "Login successful",

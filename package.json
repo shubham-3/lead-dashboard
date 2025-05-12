@@ -1,0 +1,21 @@
+{
+  "name": "kaizen-asg",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shubham-3/lead-dashboard.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/shubham-3/lead-dashboard/issues"
+  },
+  "homepage": "https://github.com/shubham-3/lead-dashboard#readme",
+  "description": ""
+}
