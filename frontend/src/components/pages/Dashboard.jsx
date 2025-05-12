@@ -30,7 +30,7 @@ const Dashboard = () => {
   const [allPlatforms, setAllPlatforms] = useState([]);
 
   const fetchLeads = async () => {
-    const res = await axios.get('http://localhost:3000/api/dash/leads', {
+    const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/dash/leads`, {
       params: {
         campaign: campaignFilter,
         platform: platformFilter,
@@ -64,7 +64,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     // Fetch all unique campaign/platform options from initial data
-    axios.get('http://localhost:3000/api/dash/leads').then(res => {
+    axios.get(`${import.meta.env.VITE_BASE_URL}/api/dash/leads`).then(res => {
       const campaigns = [...new Set(res.data.leads.map(lead => lead.campaign))];
       const platforms = [...new Set(res.data.leads.map(lead => lead.platform))];
       setAllCampaigns(campaigns);
